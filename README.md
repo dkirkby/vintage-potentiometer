@@ -84,8 +84,8 @@ Custom mapping functions map values to normalized positions in `[0, 1]`, and pos
 | Shift + drag | Fine adjustment |
 | Arrow keys | Change by `step` |
 | Shift + arrow | Change by `step / 10` |
-| Page Up/Down | Change by about 10% of the range |
-| Home/End | Select minimum/maximum |
+| Page Up/Down (Mac: Fn + Up/Down) | Change by about 10% of the range |
+| Home/End (Mac: Fn + Left/Right) | Select minimum/maximum |
 | Double-click | Restore `defaultValue` |
 
 ## Important props
