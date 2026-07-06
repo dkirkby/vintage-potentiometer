@@ -89,7 +89,7 @@ export function Potentiometer({
   if (!(step > 0)) throw new Error("Potentiometer requires step to be greater than zero.");
 
   const id = useId();
-  const dragRef = useRef<{ pointerId: number; startY: number; startPosition: number } | null>(null);
+  const dragRef = useRef<{ pointerId: number; startY: number; startPosition: number; shiftKey: boolean } | null>(null);
   const latestValueRef = useRef(value);
   const [dragging, setDragging] = useState(false);
 
@@ -115,7 +115,7 @@ export function Potentiometer({
   function handlePointerDown(event: PointerEvent<HTMLDivElement>): void {
     if (disabled || event.button !== 0) return;
     event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = { pointerId: event.pointerId, startY: event.clientY, startPosition: position };
+    dragRef.current = { pointerId: event.pointerId, startY: event.clientY, startPosition: position, shiftKey: event.shiftKey };
     setDragging(true);
     onChangeStart?.();
     event.preventDefault();
@@ -124,6 +124,14 @@ export function Potentiometer({
   function handlePointerMove(event: PointerEvent<HTMLDivElement>): void {
     const drag = dragRef.current;
     if (disabled || drag === null || drag.pointerId !== event.pointerId) return;
+    if (event.shiftKey !== drag.shiftKey) {
+      // Re-anchor so the sensitivity change takes effect from here, not from
+      // the original pointer-down point (which would rescale the whole
+      // accumulated delta and cause a jump).
+      drag.startY = event.clientY;
+      drag.startPosition = position;
+      drag.shiftKey = event.shiftKey;
+    }
     const deltaY = drag.startY - event.clientY;
     const sensitivity = event.shiftKey ? 0.1 : 1;
     setPosition(drag.startPosition + (deltaY / dragDistance) * sensitivity);
