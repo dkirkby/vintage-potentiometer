@@ -106,8 +106,8 @@ export function Potentiometer({
     onChange(nextValue);
   }
 
-  function setValue(nextValue: number): void {
-    const quantizedValue = quantize(nextValue, min, max, step);
+  function setValue(nextValue: number, quantizeStep: number = step): void {
+    const quantizedValue = quantize(nextValue, min, max, quantizeStep);
     latestValueRef.current = quantizedValue;
     onChange(quantizedValue);
   }
@@ -152,12 +152,13 @@ export function Potentiometer({
     const increment = event.shiftKey ? step / 10 : step;
     const pageIncrement = Math.max(step, (max - min) / 10);
     let nextValue: number | undefined;
+    let quantizeStep = step;
 
     switch (event.key) {
       case "ArrowUp":
-      case "ArrowRight": nextValue = value + increment; break;
+      case "ArrowRight": nextValue = value + increment; quantizeStep = increment; break;
       case "ArrowDown":
-      case "ArrowLeft": nextValue = value - increment; break;
+      case "ArrowLeft": nextValue = value - increment; quantizeStep = increment; break;
       case "PageUp": nextValue = value + pageIncrement; break;
       case "PageDown": nextValue = value - pageIncrement; break;
       case "Home": nextValue = min; break;
@@ -165,7 +166,7 @@ export function Potentiometer({
       default: return;
     }
 
-    setValue(nextValue);
+    setValue(nextValue, quantizeStep);
     event.preventDefault();
   }
 

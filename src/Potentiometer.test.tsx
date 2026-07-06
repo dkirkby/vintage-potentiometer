@@ -23,6 +23,33 @@ describe("Potentiometer", () => {
     expect(onChange).toHaveBeenCalledWith(6);
   });
 
+  it("moves by step/10 on Shift+ArrowUp", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    function Example() {
+      const [value, setValue] = useState(5);
+      return (
+        <Potentiometer
+          label="Gain"
+          value={value}
+          min={0}
+          max={10}
+          step={1}
+          onChange={next => {
+            setValue(next);
+            onChange(next);
+          }}
+        />
+      );
+    }
+    render(<Example />);
+    const slider = screen.getByRole("slider", { name: "Gain" });
+    slider.focus();
+    await user.keyboard("{Shift>}{ArrowUp}{ArrowUp}{/Shift}");
+    expect(onChange).toHaveBeenNthCalledWith(1, 5.1);
+    expect(onChange).toHaveBeenNthCalledWith(2, 5.2);
+  });
+
   it("supports a controlled value", async () => {
     const user = userEvent.setup();
     function Example() {
