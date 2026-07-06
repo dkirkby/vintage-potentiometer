@@ -1,0 +1,77 @@
+{
+  "name": "@dkirkby/vintage-potentiometer",
+  "version": "0.1.0",
+  "description": "An accessible, reusable 1950s-style rotary potentiometer control for React.",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "jsdom": "^27.0.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "typescript": "^6.0.3",
+    "vite": "^8.1.2",
+    "vite-plugin-dts": "^5.0.3",
+    "vite-plugin-lib-inject-css": "^2.2.2",
+    "vitest": "^4.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run test:run && npm run build",
+    "prepublishOnly": "npm run check"
+  },
+  "keywords": [
+    "react",
+    "potentiometer",
+    "knob",
+    "rotary-control",
+    "slider",
+    "accessible"
+  ],
+  "author": {
+    "name": "David Kirkby",
+    "email": "dkirkby@uci.edu",
+    "url": "https://github.com/dkirkby"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dkirkby/vintage-potentiometer.git"
+  },
+
+  "bugs": {
+    "url": "https://github.com/dkirkby/vintage-potentiometer/issues"
+  },
+
+  "homepage": "https://github.com/dkirkby/vintage-potentiometer#readme",
+
+  "license": "MIT"
+}

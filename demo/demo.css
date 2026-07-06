@@ -1,0 +1,11 @@
+:root { color: #2d2a24; background: #d8d0bb; font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+* { box-sizing: border-box; }
+body { min-width: 320px; min-height: 100vh; margin: 0; padding: 2rem; display: grid; place-items: center; background: linear-gradient(rgb(255 255 255 / 18%), rgb(255 255 255 / 18%)), repeating-linear-gradient(0deg, #d4cbb5 0, #d4cbb5 3px, #d8cfba 3px, #d8cfba 6px); }
+.demo-panel { width: min(900px, 100%); padding: 2.25rem; border: 1px solid #9e9276; border-radius: 18px; background: radial-gradient(circle at 20% 10%, rgb(255 255 255 / 35%), transparent 34%), #e8dfca; box-shadow: inset 0 1px 0 rgb(255 255 255 / 80%), inset 0 -2px 5px rgb(80 60 30 / 10%), 0 18px 50px rgb(60 45 25 / 24%); }
+h1 { margin: 0 0 0.4rem; font-family: Georgia, "Times New Roman", serif; letter-spacing: 0.02em; }
+.demo-subtitle { margin: 0 0 2rem; color: #655e50; }
+.demo-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; align-items: start; }
+.demo-red-knob { --pot-knob-face: #542b25; --pot-knob-highlight: #74463d; --pot-knob-edge: #261511; }
+.demo-readout { display: block; margin-top: 2rem; padding: 1rem 1.1rem; border: 1px solid #a89c80; border-radius: 10px; background: #d7ccb1; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.6; }
+.demo-instructions { margin: 1.25rem 0 0; color: #5f584b; font-size: 0.92rem; }
+kbd { padding: 0.1rem 0.35rem; border: 1px solid #a89c80; border-radius: 4px; background: rgb(255 255 255 / 35%); box-shadow: 0 1px 0 rgb(0 0 0 / 15%); font: inherit; }
