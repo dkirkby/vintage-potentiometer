@@ -105,6 +105,7 @@ interface PotentiometerProps {
   dragDistance?: number;
   tickCount?: number;
   className?: string;
+  style?: CSSProperties;
   formatValue?: (value: number) => string;
   valueToPosition?: ValueToPosition;
   positionToValue?: PositionToValue;
@@ -115,23 +116,42 @@ interface PotentiometerProps {
 
 ## Theming
 
+Only `--pot-panel`, `--pot-knob-face`, `--pot-text`, `--pot-indicator`, and `--pot-focus-ring` need to be set — the panel/knob highlight and edge tones are derived from `--pot-panel` and `--pot-knob-face` automatically (via `color-mix()`), so a single base color still renders a coherent lit/shaded surface:
+
 ```tsx
 <Potentiometer className="red-knob" label="Tone" value={tone} onChange={setTone} />
 ```
 
 ```css
 .red-knob {
-  --pot-panel: #ded7c5;
-  --pot-panel-highlight: #f5eedc;
-  --pot-panel-edge: #a79b80;
-  --pot-text: #2f2b25;
-  --pot-knob-face: #542b25;
-  --pot-knob-highlight: #74463d;
-  --pot-knob-edge: #261511;
+  --pot-panel: #542b25;
+  --pot-knob-face: #74463d;
   --pot-indicator: #fff0c2;
-  --pot-focus-ring: rgb(42 91 135 / 40%);
 }
 ```
+
+Set `--pot-panel-highlight`, `--pot-panel-edge`, `--pot-knob-highlight`, or `--pot-knob-edge` directly to override any of the derived tones with an exact color instead.
+
+`--pot-light-angle` (default `-35deg`, 0deg is straight above, increasing clockwise) controls the simulated light direction — it repositions the highlight on the panel and knob gradients and the direction their inset/drop shadows fall:
+
+```css
+.red-knob {
+  --pot-light-angle: 120deg; /* light from the lower right */
+}
+```
+
+For colors computed at runtime (e.g. a live theme picker), set the same custom properties via `style` instead — the values must land on the component's own root element, so an ancestor element's `style` will not work:
+
+```tsx
+<Potentiometer
+  label="Tone"
+  value={tone}
+  onChange={setTone}
+  style={{ "--pot-panel": panelColor, "--pot-knob-face": knobColor } as CSSProperties}
+/>
+```
+
+Deriving the highlight/edge tones and light angle relies on `color-mix()` and the CSS trig functions (`sin()`/`cos()`), both supported in current versions of Chrome, Firefox, Safari, and Edge (roughly 2023 or later).
 
 ## Development
 

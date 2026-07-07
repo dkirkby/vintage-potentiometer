@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Potentiometer, type PositionToValue, type ValueToPosition } from "../src";
+import { Playground } from "./Playground";
 
 const logValueToPosition: ValueToPosition = (value, min, max) =>
   Math.log(value / min) / Math.log(max / min);
@@ -13,8 +14,14 @@ export function Demo() {
 
   return (
     <main className="demo-panel">
-      <h1>Vintage Control Panel</h1>
-      <p className="demo-subtitle">Drag vertically, use the keyboard, or double-click to reset.</p>
+      <h1>Vintage Potentiometer</h1>
+      <p className="demo-subtitle">Hold <kbd>Shift</kbd> while dragging or pressing an arrow key for fine adjustment. Page Up/Down changes by 10% of the range; Home/End selects the limits.</p>
+
+      <Playground />
+
+      <hr className="demo-divider" />
+
+      <h2>Examples</h2>
       <section className="demo-controls">
         <Potentiometer label="Gain" value={gain} onChange={setGain} min={0} max={10} step={0.1} defaultValue={5} formatValue={value => value.toFixed(1)} />
         <Potentiometer label="Frequency" value={frequency} onChange={setFrequency} min={100} max={5000} step={10} defaultValue={1000} valueToPosition={logValueToPosition} positionToValue={logPositionToValue} formatValue={value => `${Math.round(value)} Hz`} />
@@ -25,7 +32,6 @@ export function Demo() {
         frequency = {Math.round(frequency)} Hz<br />
         tone = {tone > 0 ? "+" : ""}{tone}
       </output>
-      <p className="demo-instructions">Hold <kbd>Shift</kbd> while dragging or pressing an arrow key for fine adjustment. Page Up/Down changes by 10% of the range; Home/End selects the limits.</p>
     </main>
   );
 }

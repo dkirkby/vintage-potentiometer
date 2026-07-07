@@ -1,0 +1,278 @@
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { Potentiometer } from "../src";
+
+interface PlaygroundConfig {
+  min: number;
+  max: number;
+  step: number;
+  defaultValue: number;
+  size: number;
+  sweepDegrees: number;
+  dragDistance: number;
+  tickCount: number;
+  disabled: boolean;
+  decimals: number;
+}
+
+const DEFAULT_CONFIG: PlaygroundConfig = {
+  min: 0,
+  max: 100,
+  step: 1,
+  defaultValue: 50,
+  size: 160,
+  sweepDegrees: 270,
+  dragDistance: 180,
+  tickCount: 11,
+  disabled: false,
+  decimals: 0
+};
+
+interface ThemeConfig {
+  panel: string;
+  knobFace: string;
+  indicator: string;
+  lightAngle: number;
+}
+
+const DEFAULT_THEME: ThemeConfig = {
+  panel: "#e7ddc4",
+  knobFace: "#302e28",
+  indicator: "#eee1bd",
+  lightAngle: -35
+};
+
+type ThemeStyle = CSSProperties & Record<`--pot-${string}`, string>;
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+function parseNumber(raw: string, previous: number): number {
+  const parsed = Number(raw);
+  return Number.isNaN(parsed) ? previous : parsed;
+}
+
+export function Playground() {
+  const [config, setConfig] = useState(DEFAULT_CONFIG);
+  const [theme, setTheme] = useState(DEFAULT_THEME);
+  const [value, setValue] = useState(DEFAULT_CONFIG.defaultValue);
+  const [log, setLog] = useState<string[]>([]);
+
+  // Guard against invalid combinations (e.g. max <= min) while the user is
+  // mid-edit, so the live preview never hits the component's invariant checks.
+  const safeMin = config.min;
+  const safeMax = config.max > config.min ? config.max : config.min + 1;
+  const safeStep = config.step > 0 ? config.step : 1;
+
+  useEffect(() => {
+    setValue(current => clamp(current, safeMin, safeMax));
+  }, [safeMin, safeMax]);
+
+  function updateConfig<K extends keyof PlaygroundConfig>(key: K, next: PlaygroundConfig[K]): void {
+    setConfig(previous => ({ ...previous, [key]: next }));
+  }
+
+  function appendLog(message: string): void {
+    setLog(previous => [message, ...previous].slice(0, 6));
+  }
+
+  function resetAll(): void {
+    setConfig(DEFAULT_CONFIG);
+    setTheme(DEFAULT_THEME);
+    setValue(DEFAULT_CONFIG.defaultValue);
+    setLog([]);
+  }
+
+  const themeStyle: ThemeStyle = {
+    "--pot-panel": theme.panel,
+    "--pot-knob-face": theme.knobFace,
+    "--pot-indicator": theme.indicator,
+    "--pot-light-angle": `${theme.lightAngle}deg`
+  };
+
+  const formatValue = (v: number) => v.toFixed(config.decimals);
+
+  const snippet = useMemo(() => {
+    const props = [
+      `label="Playground"`,
+      `value={${formatValue(value)}}`,
+      `onChange={setValue}`,
+      `min={${safeMin}}`,
+      `max={${safeMax}}`,
+      `step={${safeStep}}`,
+      `defaultValue={${config.defaultValue}}`,
+      config.size !== DEFAULT_CONFIG.size ? `size={${config.size}}` : null,
+      config.sweepDegrees !== DEFAULT_CONFIG.sweepDegrees ? `sweepDegrees={${config.sweepDegrees}}` : null,
+      config.dragDistance !== DEFAULT_CONFIG.dragDistance ? `dragDistance={${config.dragDistance}}` : null,
+      config.tickCount !== DEFAULT_CONFIG.tickCount ? `tickCount={${config.tickCount}}` : null,
+      config.disabled ? `disabled` : null,
+      config.decimals > 0 ? `formatValue={value => value.toFixed(${config.decimals})}` : null
+    ].filter((line): line is string => line !== null);
+    return `<Potentiometer\n  ${props.join("\n  ")}\n/>`;
+  }, [config, safeMin, safeMax, safeStep, value]);
+
+  return (
+    <section className="playground">
+      <h2>Playground</h2>
+      <p className="demo-subtitle">Adjust any prop below, then drag, use the keyboard, or double-click the knob.</p>
+
+      <div className="playground-layout">
+        <div className="playground-preview">
+          <Potentiometer
+            label="Playground"
+            value={value}
+            onChange={setValue}
+            min={safeMin}
+            max={safeMax}
+            step={safeStep}
+            defaultValue={config.defaultValue}
+            size={config.size}
+            sweepDegrees={config.sweepDegrees}
+            dragDistance={config.dragDistance}
+            tickCount={config.tickCount}
+            disabled={config.disabled}
+            style={themeStyle}
+            formatValue={formatValue}
+            onChangeStart={() => appendLog("onChangeStart")}
+            onChangeEnd={next => appendLog(`onChangeEnd(${formatValue(next)})`)}
+          />
+        </div>
+
+        <form className="playground-controls" onSubmit={event => event.preventDefault()}>
+          <label>
+            min
+            <input
+              type="number"
+              value={config.min}
+              onChange={event => updateConfig("min", parseNumber(event.target.value, config.min))}
+            />
+          </label>
+          <label>
+            max
+            <input
+              type="number"
+              value={config.max}
+              onChange={event => updateConfig("max", parseNumber(event.target.value, config.max))}
+            />
+          </label>
+          <label>
+            step
+            <input
+              type="number"
+              step="any"
+              value={config.step}
+              onChange={event => updateConfig("step", parseNumber(event.target.value, config.step))}
+            />
+          </label>
+          <label>
+            defaultValue
+            <input
+              type="number"
+              value={config.defaultValue}
+              onChange={event => updateConfig("defaultValue", parseNumber(event.target.value, config.defaultValue))}
+            />
+          </label>
+          <label>
+            decimals
+            <input
+              type="number"
+              min={0}
+              max={6}
+              value={config.decimals}
+              onChange={event => updateConfig("decimals", clamp(parseNumber(event.target.value, config.decimals), 0, 6))}
+            />
+          </label>
+          <label>
+            size ({config.size}px)
+            <input
+              type="range"
+              min={64}
+              max={256}
+              value={config.size}
+              onChange={event => updateConfig("size", Number(event.target.value))}
+            />
+          </label>
+          <label>
+            sweepDegrees ({config.sweepDegrees}&deg;)
+            <input
+              type="range"
+              min={90}
+              max={350}
+              value={config.sweepDegrees}
+              onChange={event => updateConfig("sweepDegrees", Number(event.target.value))}
+            />
+          </label>
+          <label>
+            dragDistance ({config.dragDistance}px)
+            <input
+              type="range"
+              min={40}
+              max={400}
+              value={config.dragDistance}
+              onChange={event => updateConfig("dragDistance", Number(event.target.value))}
+            />
+          </label>
+          <label>
+            tickCount ({config.tickCount})
+            <input
+              type="range"
+              min={2}
+              max={25}
+              value={config.tickCount}
+              onChange={event => updateConfig("tickCount", Number(event.target.value))}
+            />
+          </label>
+          <label className="playground-checkbox">
+            <input
+              type="checkbox"
+              checked={config.disabled}
+              onChange={event => updateConfig("disabled", event.target.checked)}
+            />
+            disabled
+          </label>
+
+          <fieldset className="playground-theme">
+            <legend>Theme</legend>
+            <label>
+              panel
+              <input type="color" value={theme.panel} onChange={event => setTheme(previous => ({ ...previous, panel: event.target.value }))} />
+            </label>
+            <label>
+              knob
+              <input type="color" value={theme.knobFace} onChange={event => setTheme(previous => ({ ...previous, knobFace: event.target.value }))} />
+            </label>
+            <label>
+              indicator
+              <input type="color" value={theme.indicator} onChange={event => setTheme(previous => ({ ...previous, indicator: event.target.value }))} />
+            </label>
+            <label>
+              light angle ({theme.lightAngle}&deg;)
+              <input
+                type="range"
+                min={-180}
+                max={180}
+                value={theme.lightAngle}
+                onChange={event => setTheme(previous => ({ ...previous, lightAngle: Number(event.target.value) }))}
+              />
+            </label>
+          </fieldset>
+
+          <button type="button" className="playground-reset" onClick={resetAll}>
+            Reset to defaults
+          </button>
+        </form>
+      </div>
+
+      <div className="playground-output">
+        <pre className="playground-snippet"><code>{snippet}</code></pre>
+        <div className="playground-log">
+          <strong>Events</strong>
+          <ul>
+            {log.length === 0 && <li className="playground-log-empty">Drag the knob to see onChangeStart/onChangeEnd fire.</li>}
+            {log.map((entry, index) => <li key={index}>{entry}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}

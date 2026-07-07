@@ -1,4 +1,5 @@
 import {
+  type CSSProperties,
   type KeyboardEvent,
   type PointerEvent,
   useId,
@@ -32,6 +33,7 @@ export interface PotentiometerProps {
   dragDistance?: number;
   tickCount?: number;
   className?: string;
+  style?: CSSProperties;
   formatValue?: (value: number) => string;
   valueToPosition?: ValueToPosition;
   positionToValue?: PositionToValue;
@@ -79,6 +81,7 @@ export function Potentiometer({
   dragDistance = 180,
   tickCount = 11,
   className,
+  style,
   formatValue = value => String(value),
   valueToPosition = linearValueToPosition,
   positionToValue = linearPositionToValue,
@@ -184,7 +187,7 @@ export function Potentiometer({
   const actualTickCount = Math.max(2, tickCount);
 
   return (
-    <div className={rootClassName} style={{ width: size }}>
+    <div className={rootClassName} style={{ ...style, width: size }}>
       <div id={`${id}-label`} className="vintage-potentiometer__label">{label}</div>
       <div
         className="vintage-potentiometer__control"

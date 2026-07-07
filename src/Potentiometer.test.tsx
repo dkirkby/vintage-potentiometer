@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
@@ -11,6 +11,24 @@ describe("Potentiometer", () => {
     expect(slider).toHaveAttribute("aria-valuemin", "0");
     expect(slider).toHaveAttribute("aria-valuemax", "10");
     expect(slider).toHaveAttribute("aria-valuenow", "5");
+  });
+
+  it("forwards a style prop, merged onto its own root element", () => {
+    const { container } = render(
+      <Potentiometer
+        label="Gain"
+        value={5}
+        min={0}
+        max={10}
+        step={1}
+        size={64}
+        onChange={() => undefined}
+        style={{ "--pot-panel": "#123456" } as CSSProperties}
+      />
+    );
+    const root = container.querySelector(".vintage-potentiometer") as HTMLElement;
+    expect(root.style.getPropertyValue("--pot-panel")).toBe("#123456");
+    expect(root.style.width).toBe("64px");
   });
 
   it("increments with ArrowUp", async () => {
