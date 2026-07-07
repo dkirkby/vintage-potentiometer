@@ -27,6 +27,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^26.1.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
@@ -61,17 +62,13 @@
     "email": "dkirkby@uci.edu",
     "url": "https://github.com/dkirkby"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dkirkby/vintage-potentiometer.git"
   },
-
   "bugs": {
     "url": "https://github.com/dkirkby/vintage-potentiometer/issues"
   },
-
   "homepage": "https://github.com/dkirkby/vintage-potentiometer#readme",
-
   "license": "MIT"
 }
