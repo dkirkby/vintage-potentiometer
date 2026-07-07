@@ -166,6 +166,30 @@ For colors computed at runtime (e.g. a live theme picker), set the same custom p
 
 Deriving the highlight/edge tones and light angle relies on `color-mix()` and the CSS trig functions (`sin()`/`cos()`), both supported in current versions of Chrome, Firefox, Safari, and Edge (roughly 2023 or later).
 
+## Using it in an Observable notebook
+
+Use **[Observable Framework](https://observablehq.com/framework/)** (the static-site builder), not a classic notebook (observablehq.com). Framework does a real build (Vite) with actual npm dependency resolution, so `react`/`react-dom` get deduped the normal way, like any bundler-based app. Classic notebooks have no real dependency graph — importing a compiled React component library through ad-hoc CDN imports there is prone to loading two separate copies of React and hitting "invalid hook call"-style failures, and isn't a reliable path for this package.
+
+Framework supports JSX fenced code blocks with React/ReactDOM available by default:
+
+````md
+```jsx
+import {Potentiometer} from "npm:@dkirkby/vintage-potentiometer";
+
+function Gain() {
+  const [gain, setGain] = React.useState(5);
+  return <Potentiometer label="Gain" value={gain} onChange={setGain} min={0} max={10} step={0.1} />;
+}
+display(<Gain />);
+```
+````
+
+If the stylesheet doesn't load automatically, add it explicitly as plain HTML in the page:
+
+```html
+<link rel="stylesheet" href="npm:@dkirkby/vintage-potentiometer/dist/style.css">
+```
+
 ## Development
 
 ```bash
