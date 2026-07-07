@@ -23,17 +23,28 @@
   --pot-light-x: sin(var(--pot-light-angle));
   --pot-light-y: calc(0 - cos(var(--pot-light-angle)));
 
+  --pot-label-font-family: "Arial Narrow", "Avenir Next Condensed", system-ui, sans-serif;
+  --pot-value-font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* --pot-label-font-size, --pot-value-font-size and --pot-gap are optional:
+     set them directly for a fixed value. Left unset, they scale with
+     --pot-size (set from the `size` prop) so the label, value readout, and
+     layout spacing stay proportional to the knob at any size. */
+  --pot-label-font-size-auto: calc(var(--pot-size, 128px) * 0.1025);
+  --pot-value-font-size-auto: calc(var(--pot-size, 128px) * 0.1025);
+  --pot-gap-auto: calc(var(--pot-size, 128px) * 0.0625);
+
   display: inline-grid;
   justify-items: center;
-  gap: 0.5rem;
+  gap: var(--pot-gap, var(--pot-gap-auto));
   color: var(--pot-text);
-  font-family: "Arial Narrow", "Avenir Next Condensed", system-ui, sans-serif;
+  font-family: var(--pot-label-font-family);
   user-select: none;
   -webkit-user-select: none;
 }
 
 .vintage-potentiometer__label {
-  font-size: 0.82rem;
+  font-size: var(--pot-label-font-size, var(--pot-label-font-size-auto));
   font-weight: 800;
   letter-spacing: 0.14em;
   text-align: center;
@@ -105,7 +116,7 @@
 /* Only the transparent indicator layer rotates. Lighting remains stationary. */
 .vintage-potentiometer__rotor { position: absolute; inset: 0; border-radius: 50%; transform-origin: center; }
 .vintage-potentiometer__indicator { position: absolute; top: 8%; left: 50%; width: 4px; height: 28%; border-radius: 2px; background: var(--pot-indicator); box-shadow: 0 0 1px #000; transform: translateX(-50%); }
-.vintage-potentiometer__value { min-height: 1.25em; color: inherit; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+.vintage-potentiometer__value { min-height: 1.25em; color: inherit; font-family: var(--pot-value-font-family); font-size: var(--pot-value-font-size, var(--pot-value-font-size-auto)); font-variant-numeric: tabular-nums; }
 .vintage-potentiometer--disabled { opacity: 0.45; }
 .vintage-potentiometer--disabled .vintage-potentiometer__control { cursor: not-allowed; }
 

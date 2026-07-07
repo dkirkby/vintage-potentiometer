@@ -187,7 +187,7 @@ export function Potentiometer({
   const actualTickCount = Math.max(2, tickCount);
 
   return (
-    <div className={rootClassName} style={{ ...style, width: size }}>
+    <div className={rootClassName} style={{ ...style, width: size, "--pot-size": `${size}px` } as CSSProperties}>
       <div id={`${id}-label`} className="vintage-potentiometer__label">{label}</div>
       <div
         className="vintage-potentiometer__control"

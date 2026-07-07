@@ -31,6 +31,14 @@ describe("Potentiometer", () => {
     expect(root.style.width).toBe("64px");
   });
 
+  it("exposes the size prop as --pot-size for scaling font size and gap", () => {
+    const { container } = render(
+      <Potentiometer label="Gain" value={5} min={0} max={10} step={1} size={64} onChange={() => undefined} />
+    );
+    const root = container.querySelector(".vintage-potentiometer") as HTMLElement;
+    expect(root.style.getPropertyValue("--pot-size")).toBe("64px");
+  });
+
   it("increments with ArrowUp", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();

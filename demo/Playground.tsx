@@ -32,14 +32,33 @@ interface ThemeConfig {
   knobFace: string;
   indicator: string;
   lightAngle: number;
+  labelFontFamily: string;
+  valueFontFamily: string;
+  labelFontSize: number;
+  valueFontSize: number;
+  gap: number;
 }
 
 const DEFAULT_THEME: ThemeConfig = {
   panel: "#e7ddc4",
   knobFace: "#302e28",
   indicator: "#eee1bd",
-  lightAngle: -35
+  lightAngle: -35,
+  labelFontFamily: "",
+  valueFontFamily: "",
+  labelFontSize: 0,
+  valueFontSize: 0,
+  gap: 0
 };
+
+// Empty string / 0 mean "unset" here, so the component's own auto-scaling
+// default (proportional to size) applies instead of a fixed value.
+const FONT_FAMILY_OPTIONS = [
+  { label: "Default", value: "" },
+  { label: "Serif", value: "Georgia, 'Times New Roman', serif" },
+  { label: "Monospace", value: "'Courier New', monospace" },
+  { label: "Sans", value: "'Trebuchet MS', sans-serif" }
+];
 
 type ThemeStyle = CSSProperties & Record<`--pot-${string}`, string>;
 
@@ -87,7 +106,12 @@ export function Playground() {
     "--pot-panel": theme.panel,
     "--pot-knob-face": theme.knobFace,
     "--pot-indicator": theme.indicator,
-    "--pot-light-angle": `${theme.lightAngle}deg`
+    "--pot-light-angle": `${theme.lightAngle}deg`,
+    ...(theme.labelFontFamily && { "--pot-label-font-family": theme.labelFontFamily }),
+    ...(theme.valueFontFamily && { "--pot-value-font-family": theme.valueFontFamily }),
+    ...(theme.labelFontSize > 0 && { "--pot-label-font-size": `${theme.labelFontSize}px` }),
+    ...(theme.valueFontSize > 0 && { "--pot-value-font-size": `${theme.valueFontSize}px` }),
+    ...(theme.gap > 0 && { "--pot-gap": `${theme.gap}px` })
   };
 
   const formatValue = (v: number) => v.toFixed(config.decimals);
@@ -253,6 +277,58 @@ export function Playground() {
                 max={180}
                 value={theme.lightAngle}
                 onChange={event => setTheme(previous => ({ ...previous, lightAngle: Number(event.target.value) }))}
+              />
+            </label>
+          </fieldset>
+
+          <fieldset className="playground-theme">
+            <legend>Typography &amp; spacing</legend>
+            <label>
+              label font
+              <select
+                value={theme.labelFontFamily}
+                onChange={event => setTheme(previous => ({ ...previous, labelFontFamily: event.target.value }))}
+              >
+                {FONT_FAMILY_OPTIONS.map(option => <option key={option.label} value={option.value}>{option.label}</option>)}
+              </select>
+            </label>
+            <label>
+              value font
+              <select
+                value={theme.valueFontFamily}
+                onChange={event => setTheme(previous => ({ ...previous, valueFontFamily: event.target.value }))}
+              >
+                {FONT_FAMILY_OPTIONS.map(option => <option key={option.label} value={option.value}>{option.label}</option>)}
+              </select>
+            </label>
+            <label>
+              label size ({theme.labelFontSize > 0 ? `${theme.labelFontSize}px` : "auto"})
+              <input
+                type="range"
+                min={0}
+                max={40}
+                value={theme.labelFontSize}
+                onChange={event => setTheme(previous => ({ ...previous, labelFontSize: Number(event.target.value) }))}
+              />
+            </label>
+            <label>
+              value size ({theme.valueFontSize > 0 ? `${theme.valueFontSize}px` : "auto"})
+              <input
+                type="range"
+                min={0}
+                max={40}
+                value={theme.valueFontSize}
+                onChange={event => setTheme(previous => ({ ...previous, valueFontSize: Number(event.target.value) }))}
+              />
+            </label>
+            <label>
+              gap ({theme.gap > 0 ? `${theme.gap}px` : "auto"})
+              <input
+                type="range"
+                min={0}
+                max={48}
+                value={theme.gap}
+                onChange={event => setTheme(previous => ({ ...previous, gap: Number(event.target.value) }))}
               />
             </label>
           </fieldset>

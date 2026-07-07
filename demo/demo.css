@@ -18,7 +18,7 @@ kbd { padding: 0.1rem 0.35rem; border: 1px solid #a89c80; border-radius: 4px; ba
 .playground-controls { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem 1.5rem; align-items: end; }
 .playground-controls label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5f584b; }
 .playground-controls input { font: inherit; }
-.playground-controls input[type="number"] { padding: 0.35rem 0.5rem; border: 1px solid #a89c80; border-radius: 6px; background: #fbf7ec; }
+.playground-controls input[type="number"], .playground-controls select { padding: 0.35rem 0.5rem; border: 1px solid #a89c80; border-radius: 6px; background: #fbf7ec; }
 .playground-checkbox { flex-direction: row !important; align-items: center; gap: 0.5rem !important; }
 .playground-theme { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0; padding: 0.75rem 1rem; border: 1px solid #a89c80; border-radius: 8px; }
 .playground-theme legend { padding: 0 0.4rem; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #5f584b; }

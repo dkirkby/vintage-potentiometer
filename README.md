@@ -140,6 +140,15 @@ Set `--pot-panel-highlight`, `--pot-panel-edge`, `--pot-knob-highlight`, or `--p
 }
 ```
 
+`--pot-label-font-family` and `--pot-value-font-family` set the label and value readout typefaces. `--pot-label-font-size`, `--pot-value-font-size`, and `--pot-gap` (the spacing between the label, knob, and value) are also optional — left unset, they scale proportionally with `size` instead of a fixed default, so a larger or smaller knob keeps its text and spacing in proportion:
+
+```css
+.red-knob {
+  --pot-label-font-family: Georgia, serif;
+  --pot-value-font-size: 1rem; /* fixed instead of scaling with size */
+}
+```
+
 For colors computed at runtime (e.g. a live theme picker), set the same custom properties via `style` instead — the values must land on the component's own root element, so an ancestor element's `style` will not work:
 
 ```tsx
