@@ -39,6 +39,21 @@ describe("Potentiometer", () => {
     expect(root.style.getPropertyValue("--pot-size")).toBe("64px");
   });
 
+  it("hides the label row but keeps an accessible name via aria-label", () => {
+    render(<Potentiometer label="Gain" value={5} min={0} max={10} step={1} showLabel={false} onChange={() => undefined} />);
+    const slider = screen.getByRole("slider", { name: "Gain" });
+    expect(slider).not.toHaveAttribute("aria-labelledby");
+    expect(slider).toHaveAttribute("aria-label", "Gain");
+    expect(screen.queryByText("Gain")).not.toBeInTheDocument();
+  });
+
+  it("omits the value readout element when showValue is false", () => {
+    const { container } = render(
+      <Potentiometer label="Gain" value={5} min={0} max={10} step={1} showValue={false} onChange={() => undefined} />
+    );
+    expect(container.querySelector(".vintage-potentiometer__value")).toBeNull();
+  });
+
   it("increments with ArrowUp", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();

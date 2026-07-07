@@ -106,6 +106,8 @@ interface PotentiometerProps {
   tickCount?: number;
   className?: string;
   style?: CSSProperties;
+  showLabel?: boolean;
+  showValue?: boolean;
   formatValue?: (value: number) => string;
   valueToPosition?: ValueToPosition;
   positionToValue?: PositionToValue;
@@ -113,6 +115,8 @@ interface PotentiometerProps {
   onChangeEnd?: (value: number) => void;
 }
 ```
+
+`showLabel` and `showValue` (both default `true`) toggle the visible label row and value readout independently; the surrounding layout collapses to fit whatever is still shown, rather than leaving empty space. `label` is still required even when `showLabel` is `false` — it's used as the slider's `aria-label` so the control stays accessible without a visible label.
 
 ## Theming
 

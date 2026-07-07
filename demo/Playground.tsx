@@ -12,6 +12,8 @@ interface PlaygroundConfig {
   tickCount: number;
   disabled: boolean;
   decimals: number;
+  showLabel: boolean;
+  showValue: boolean;
 }
 
 const DEFAULT_CONFIG: PlaygroundConfig = {
@@ -24,7 +26,9 @@ const DEFAULT_CONFIG: PlaygroundConfig = {
   dragDistance: 180,
   tickCount: 11,
   disabled: false,
-  decimals: 0
+  decimals: 0,
+  showLabel: true,
+  showValue: true
 };
 
 interface ThemeConfig {
@@ -130,6 +134,8 @@ export function Playground() {
       config.dragDistance !== DEFAULT_CONFIG.dragDistance ? `dragDistance={${config.dragDistance}}` : null,
       config.tickCount !== DEFAULT_CONFIG.tickCount ? `tickCount={${config.tickCount}}` : null,
       config.disabled ? `disabled` : null,
+      !config.showLabel ? `showLabel={false}` : null,
+      !config.showValue ? `showValue={false}` : null,
       config.decimals > 0 ? `formatValue={value => value.toFixed(${config.decimals})}` : null
     ].filter((line): line is string => line !== null);
     return `<Potentiometer\n  ${props.join("\n  ")}\n/>`;
@@ -155,6 +161,8 @@ export function Playground() {
             dragDistance={config.dragDistance}
             tickCount={config.tickCount}
             disabled={config.disabled}
+            showLabel={config.showLabel}
+            showValue={config.showValue}
             style={themeStyle}
             formatValue={formatValue}
             onChangeStart={() => appendLog("onChangeStart")}
@@ -253,6 +261,22 @@ export function Playground() {
               onChange={event => updateConfig("disabled", event.target.checked)}
             />
             disabled
+          </label>
+          <label className="playground-checkbox">
+            <input
+              type="checkbox"
+              checked={config.showLabel}
+              onChange={event => updateConfig("showLabel", event.target.checked)}
+            />
+            showLabel
+          </label>
+          <label className="playground-checkbox">
+            <input
+              type="checkbox"
+              checked={config.showValue}
+              onChange={event => updateConfig("showValue", event.target.checked)}
+            />
+            showValue
           </label>
 
           <fieldset className="playground-theme">

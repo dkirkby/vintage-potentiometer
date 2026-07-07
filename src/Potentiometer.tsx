@@ -34,6 +34,8 @@ export interface PotentiometerProps {
   tickCount?: number;
   className?: string;
   style?: CSSProperties;
+  showLabel?: boolean;
+  showValue?: boolean;
   formatValue?: (value: number) => string;
   valueToPosition?: ValueToPosition;
   positionToValue?: PositionToValue;
@@ -82,6 +84,8 @@ export function Potentiometer({
   tickCount = 11,
   className,
   style,
+  showLabel = true,
+  showValue = true,
   formatValue = value => String(value),
   valueToPosition = linearValueToPosition,
   positionToValue = linearPositionToValue,
@@ -188,13 +192,14 @@ export function Potentiometer({
 
   return (
     <div className={rootClassName} style={{ ...style, width: size, "--pot-size": `${size}px` } as CSSProperties}>
-      <div id={`${id}-label`} className="vintage-potentiometer__label">{label}</div>
+      {showLabel && <div id={`${id}-label`} className="vintage-potentiometer__label">{label}</div>}
       <div
         className="vintage-potentiometer__control"
         style={{ width: size, height: size }}
         role="slider"
         tabIndex={disabled ? -1 : 0}
-        aria-labelledby={`${id}-label`}
+        aria-labelledby={showLabel ? `${id}-label` : undefined}
+        aria-label={showLabel ? undefined : label}
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={value}
@@ -226,7 +231,7 @@ export function Potentiometer({
           </div>
         </div>
       </div>
-      <output className="vintage-potentiometer__value">{formatValue(value)}</output>
+      {showValue && <output className="vintage-potentiometer__value">{formatValue(value)}</output>}
     </div>
   );
 }
