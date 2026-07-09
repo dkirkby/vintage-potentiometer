@@ -14,6 +14,10 @@ interface PlaygroundConfig {
   decimals: number;
   showLabel: boolean;
   showValue: boolean;
+  scalloped: boolean;
+  scallopCount: number;
+  scallopFlat: number;
+  scallopRadius: number;
 }
 
 const DEFAULT_CONFIG: PlaygroundConfig = {
@@ -28,7 +32,11 @@ const DEFAULT_CONFIG: PlaygroundConfig = {
   disabled: false,
   decimals: 0,
   showLabel: true,
-  showValue: true
+  showValue: true,
+  scalloped: false,
+  scallopCount: 10,
+  scallopFlat: 0.25,
+  scallopRadius: 0.5
 };
 
 interface ThemeConfig {
@@ -136,6 +144,10 @@ export function Playground() {
       config.disabled ? `disabled` : null,
       !config.showLabel ? `showLabel={false}` : null,
       !config.showValue ? `showValue={false}` : null,
+      config.scalloped ? `scalloped` : null,
+      config.scalloped && config.scallopCount !== DEFAULT_CONFIG.scallopCount ? `scallopCount={${config.scallopCount}}` : null,
+      config.scalloped && config.scallopFlat !== DEFAULT_CONFIG.scallopFlat ? `scallopFlat={${config.scallopFlat}}` : null,
+      config.scalloped && config.scallopRadius !== DEFAULT_CONFIG.scallopRadius ? `scallopRadius={${config.scallopRadius}}` : null,
       config.decimals > 0 ? `formatValue={value => value.toFixed(${config.decimals})}` : null
     ].filter((line): line is string => line !== null);
     return `<Potentiometer\n  ${props.join("\n  ")}\n/>`;
@@ -163,6 +175,10 @@ export function Playground() {
             disabled={config.disabled}
             showLabel={config.showLabel}
             showValue={config.showValue}
+            scalloped={config.scalloped}
+            scallopCount={config.scallopCount}
+            scallopFlat={config.scallopFlat}
+            scallopRadius={config.scallopRadius}
             style={themeStyle}
             formatValue={formatValue}
             onChangeStart={() => appendLog("onChangeStart")}
@@ -277,6 +293,46 @@ export function Playground() {
               onChange={event => updateConfig("showValue", event.target.checked)}
             />
             showValue
+          </label>
+          <label className="playground-checkbox">
+            <input
+              type="checkbox"
+              checked={config.scalloped}
+              onChange={event => updateConfig("scalloped", event.target.checked)}
+            />
+            scalloped
+          </label>
+          <label>
+            scallopCount ({config.scallopCount})
+            <input
+              type="range"
+              min={2}
+              max={24}
+              value={config.scallopCount}
+              onChange={event => updateConfig("scallopCount", Number(event.target.value))}
+            />
+          </label>
+          <label>
+            scallopFlat ({config.scallopFlat.toFixed(2)})
+            <input
+              type="range"
+              min={0}
+              max={0.9}
+              step={0.05}
+              value={config.scallopFlat}
+              onChange={event => updateConfig("scallopFlat", Number(event.target.value))}
+            />
+          </label>
+          <label>
+            scallopRadius ({config.scallopRadius.toFixed(2)})
+            <input
+              type="range"
+              min={0.2}
+              max={1}
+              step={0.02}
+              value={config.scallopRadius}
+              onChange={event => updateConfig("scallopRadius", Number(event.target.value))}
+            />
           </label>
 
           <fieldset className="playground-theme">

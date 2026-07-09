@@ -54,6 +54,26 @@ describe("Potentiometer", () => {
     expect(container.querySelector(".vintage-potentiometer__value")).toBeNull();
   });
 
+  it("omits the scalloped clip-path and outline by default", () => {
+    const { container } = render(
+      <Potentiometer label="Gain" value={5} min={0} max={10} step={1} onChange={() => undefined} />
+    );
+    expect(container.querySelector(".vintage-potentiometer__knob-outline")).toBeNull();
+    const knobShell = container.querySelector(".vintage-potentiometer__knob-shell") as HTMLElement;
+    expect(knobShell.style.clipPath).toBe("");
+  });
+
+  it("clips the knob shell and renders a matching outline when scalloped", () => {
+    const { container } = render(
+      <Potentiometer label="Gain" value={5} min={0} max={10} step={1} scalloped onChange={() => undefined} />
+    );
+    const knobShell = container.querySelector(".vintage-potentiometer__knob-shell") as HTMLElement;
+    expect(knobShell.style.clipPath).toMatch(/^url\(#.+-scallop\)$/);
+    const outline = container.querySelector(".vintage-potentiometer__knob-outline path");
+    expect(outline).not.toBeNull();
+    expect(container.querySelector("clipPath path")).not.toBeNull();
+  });
+
   it("increments with ArrowUp", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();

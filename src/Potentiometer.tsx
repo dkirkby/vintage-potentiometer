@@ -3,6 +3,7 @@ import {
   type KeyboardEvent,
   type PointerEvent,
   useId,
+  useMemo,
   useRef,
   useState
 } from "react";
@@ -36,6 +37,10 @@ export interface PotentiometerProps {
   style?: CSSProperties;
   showLabel?: boolean;
   showValue?: boolean;
+  scalloped?: boolean;
+  scallopCount?: number;
+  scallopFlat?: number;
+  scallopRadius?: number;
   formatValue?: (value: number) => string;
   valueToPosition?: ValueToPosition;
   positionToValue?: PositionToValue;
@@ -48,6 +53,43 @@ const linearValueToPosition: ValueToPosition = (value, min, max) =>
 
 const linearPositionToValue: PositionToValue = (position, min, max) =>
   min + position * (max - min);
+
+// Scalloped outline, built in objectBoundingBox (0..1) space: n concave
+// notches cut into a circle of radius r, each spanning (1-f) of its 360/n
+// wedge (the remaining f stays flat, at radius r). Each notch is the minor
+// (inward-dipping) arc of a circle of radius R = radiusRatio * r, chosen so
+// that circle passes through the two points bounding the notch on the
+// r-circle: R must be at least r*sin(halfNotch) (half the chord length) for
+// that circle to exist, so radiusRatio is clamped to sin(halfNotch) as a
+// floor. SVG's arc command finds the matching circle center itself given the
+// endpoints, radius, and flags, so no center coordinates are computed here.
+function buildScallopPath(scallopCount: number, scallopFlat: number, scallopRadius: number, r: number): string {
+  const n = Math.max(2, Math.round(scallopCount));
+  const f = clamp(scallopFlat, 0, 1);
+  const wedge = (2 * Math.PI) / n;
+  const notchAngle = wedge * (1 - f);
+  const halfNotch = notchAngle / 2;
+  const radiusRatio = Math.max(scallopRadius, Math.sin(halfNotch));
+  const R = r * radiusRatio;
+
+  function point(radius: number, angle: number): string {
+    const x = 0.5 + radius * Math.sin(angle);
+    const y = 0.5 - radius * Math.cos(angle);
+    return `${x.toFixed(5)},${y.toFixed(5)}`;
+  }
+
+  const commands: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const center = i * wedge;
+    const notchStart = point(r, center - halfNotch);
+    const notchEnd = point(r, center + halfNotch);
+    if (i === 0) commands.push(`M${notchStart}`);
+    commands.push(`A${R.toFixed(5)},${R.toFixed(5)} 0 0,0 ${notchEnd}`);
+    commands.push(`A${r},${r} 0 0,1 ${point(r, center + wedge - halfNotch)}`);
+  }
+  commands.push("Z");
+  return commands.join(" ");
+}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
@@ -86,6 +128,10 @@ export function Potentiometer({
   style,
   showLabel = true,
   showValue = true,
+  scalloped = false,
+  scallopCount = 10,
+  scallopFlat = 0.25,
+  scallopRadius = 0.5,
   formatValue = value => String(value),
   valueToPosition = linearValueToPosition,
   positionToValue = linearPositionToValue,
@@ -104,6 +150,19 @@ export function Potentiometer({
   const position = clamp(valueToPosition(value, min, max), 0, 1);
   const startAngle = -sweepDegrees / 2;
   const angle = startAngle + position * sweepDegrees;
+  // The clip path matches the plain knob-shell's own radius exactly (0.5,
+  // since border-radius: 50% touches its box edges), so the flat sections
+  // line up with an unscalloped knob. The outline path is drawn slightly
+  // smaller so its stroke (centered on the path) lands at that same edge
+  // without depending on the SVG clipping away the outer half of the stroke.
+  const scallopClipPath = useMemo(
+    () => buildScallopPath(scallopCount, scallopFlat, scallopRadius, 0.5),
+    [scallopCount, scallopFlat, scallopRadius]
+  );
+  const scallopOutlinePath = useMemo(
+    () => buildScallopPath(scallopCount, scallopFlat, scallopRadius, 0.4875),
+    [scallopCount, scallopFlat, scallopRadius]
+  );
 
   function setPosition(nextPosition: number): void {
     const boundedPosition = clamp(nextPosition, 0, 1);
@@ -225,11 +284,34 @@ export function Potentiometer({
             );
           })}
         </div>
-        <div className="vintage-potentiometer__knob-shell" aria-hidden="true">
+        {scalloped && (
+          <svg className="vintage-potentiometer__knob-shadow" viewBox="0 0 1 1" aria-hidden="true">
+            <path d={scallopClipPath} transform={`rotate(${angle} 0.5 0.5)`} />
+          </svg>
+        )}
+        {scalloped && (
+          <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+            <defs>
+              <clipPath id={`${id}-scallop`} clipPathUnits="objectBoundingBox">
+                <path d={scallopClipPath} transform={`rotate(${angle} 0.5 0.5)`} />
+              </clipPath>
+            </defs>
+          </svg>
+        )}
+        <div
+          className="vintage-potentiometer__knob-shell"
+          aria-hidden="true"
+          style={scalloped ? { clipPath: `url(#${id}-scallop)` } : undefined}
+        >
           <div className="vintage-potentiometer__rotor" style={{ transform: `rotate(${angle}deg)` }}>
             <span className="vintage-potentiometer__indicator" />
           </div>
         </div>
+        {scalloped && (
+          <svg className="vintage-potentiometer__knob-outline" viewBox="0 0 1 1" aria-hidden="true">
+            <path d={scallopOutlinePath} transform={`rotate(${angle} 0.5 0.5)`} />
+          </svg>
+        )}
       </div>
       {showValue && <output className="vintage-potentiometer__value">{formatValue(value)}</output>}
     </div>

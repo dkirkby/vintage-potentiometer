@@ -108,6 +108,10 @@ interface PotentiometerProps {
   style?: CSSProperties;
   showLabel?: boolean;
   showValue?: boolean;
+  scalloped?: boolean;
+  scallopCount?: number;
+  scallopFlat?: number;
+  scallopRadius?: number;
   formatValue?: (value: number) => string;
   valueToPosition?: ValueToPosition;
   positionToValue?: PositionToValue;
@@ -117,6 +121,8 @@ interface PotentiometerProps {
 ```
 
 `showLabel` and `showValue` (both default `true`) toggle the visible label row and value readout independently; the surrounding layout collapses to fit whatever is still shown, rather than leaving empty space. `label` is still required even when `showLabel` is `false` — it's used as the slider's `aria-label` so the control stays accessible without a visible label.
+
+`scalloped` (default `false`) gives the knob a fluted edge, made of `scallopCount` (default `10`) concave notches cut into the plain circle, like a vintage Bakelite knob, colored to match `--pot-knob-edge` so it follows theming automatically. Each notch spans `1 - scallopFlat` of its `360 / scallopCount` wedge (the rest stays a flat circular arc); `scallopFlat` defaults to `0.25`. `scallopRadius` (default `0.5`) sets each notch's radius of curvature as a multiple of the knob's plain radius — smaller values cut deeper, sharper notches; it's floored automatically at whatever minimum is geometrically possible for the current `scallopCount`/`scallopFlat` so the shape never becomes invalid.
 
 ## Theming
 
