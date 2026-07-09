@@ -227,15 +227,24 @@ Install the generated tarball in a separate React app before publishing.
 
 ## Publishing
 
-1. Replace the placeholder package name.
-2. Add repository and author metadata if desired.
-3. Run `npm run check`.
-4. Run `npm pack --dry-run`.
-5. Publish:
+Releases are automated: pushing a `vX.Y.Z` tag triggers `.github/workflows/publish.yml`, which runs `npm run check` (via `prepublishOnly`) and publishes via npm's trusted publishing (OIDC) — no token, no manual `npm login`.
+
+1. Bump the version and tag it:
 
 ```bash
+npm version patch   # or minor / major, or an explicit x.y.z
+git push --follow-tags
+```
+
+2. Watch the **Actions** tab on GitHub for the `publish.yml` run — it verifies the pushed tag matches `package.json`'s version before publishing, so a mismatch fails loudly instead of publishing the wrong thing.
+
+This relies on a trusted publisher already configured on npmjs.com for this package (Settings → Trusted Publisher: organization/user `dkirkby`, repository `vintage-potentiometer`, workflow filename `publish.yml`), which itself requires the package to already exist on the registry — npm can't configure trusted publishing before a package's first release. If CI is unavailable, or you're bootstrapping a brand new package for the first time, fall back to publishing manually:
+
+```bash
+npm run check
+npm pack --dry-run
 npm login
-npm publish --access public
+npm publish --access public --otp=<code from your authenticator app>
 ```
 
 ## License
