@@ -1,6 +1,6 @@
 {
   "name": "@dkirkby/vintage-potentiometer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "An accessible, reusable 1950s-style rotary potentiometer control for React.",
   "type": "module",
   "files": [
