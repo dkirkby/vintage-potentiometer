@@ -21,30 +21,55 @@ export type PositionToValue = (
 ) => number;
 
 export interface PotentiometerProps {
+  /** The current value. This is a controlled component: the parent owns this value. */
   value: number;
+  /** Called with the requested new value; does not imply `value` has changed. */
   onChange: (value: number) => void;
+  /** Accessible name, and (when `showLabel` is true) the visible label text. */
   label: string;
+  /** Minimum value. @default 0 */
   min?: number;
+  /** Maximum value. @default 100 */
   max?: number;
+  /** Quantization step; values snap to multiples of this from `min`. @default 1 */
   step?: number;
+  /** Value restored by double-clicking the knob. No reset gesture if omitted. */
   defaultValue?: number;
+  /** Overall diameter in pixels. @default 128 */
   size?: number;
+  /** Disables dragging and keyboard interaction. @default false */
   disabled?: boolean;
+  /** Total rotation sweep from `min` to `max`, in degrees. @default 270 */
   sweepDegrees?: number;
+  /** Pixels of vertical drag needed to sweep the full range. @default 180 */
   dragDistance?: number;
+  /** Number of scale tick marks around the knob. @default 11 */
   tickCount?: number;
+  /** Additional class name(s) merged onto the root element. */
   className?: string;
+  /** Inline style merged onto the root element — the only way to set `--pot-*` custom properties computed at runtime (e.g. from a live theme picker). */
   style?: CSSProperties;
+  /** Shows the visible label row. `label` is still used as `aria-label` when false. @default true */
   showLabel?: boolean;
+  /** Shows the value readout below the knob. @default true */
   showValue?: boolean;
+  /** Gives the knob a fluted edge of concave notches instead of a plain circle. @default false */
   scalloped?: boolean;
+  /** Number of notches when `scalloped` is true. @default 10 */
   scallopCount?: number;
+  /** Fraction of each `360 / scallopCount` wedge left flat (a circular arc) rather than notched, in `[0, 1]`. @default 0.25 */
   scallopFlat?: number;
+  /** Each notch's radius of curvature, as a multiple of the knob's plain radius — smaller cuts deeper, sharper notches. Floored automatically at whatever's geometrically possible for the current `scallopCount`/`scallopFlat`. @default 0.5 */
   scallopRadius?: number;
+  /** Formats the value for the visible readout and `aria-valuetext`. @default String(value) */
   formatValue?: (value: number) => string;
+  /** Maps a value to a normalized `[0, 1]` position. @default linear */
   valueToPosition?: ValueToPosition;
+  /** Maps a normalized `[0, 1]` position back to a value. @default linear */
   positionToValue?: PositionToValue;
+  /** Called when a pointer drag begins. Not called for keyboard interaction. */
   onChangeStart?: () => void;
+  /** Called with the final value when a pointer drag ends. Not called for keyboard interaction. */
   onChangeEnd?: (value: number) => void;
 }
 
