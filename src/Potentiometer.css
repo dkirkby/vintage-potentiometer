@@ -26,13 +26,17 @@
   --pot-label-font-family: "Arial Narrow", "Avenir Next Condensed", system-ui, sans-serif;
   --pot-value-font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* --pot-label-font-size, --pot-value-font-size and --pot-gap are optional:
-     set them directly for a fixed value. Left unset, they scale with
-     --pot-size (set from the `size` prop) so the label, value readout, and
-     layout spacing stay proportional to the knob at any size. */
+  /* --pot-label-font-size, --pot-value-font-size, --pot-gap,
+     --pot-indicator-width and --pot-knob-border-width are optional: set them
+     directly for a fixed value. Left unset, they scale with --pot-size (set
+     from the `size` prop) so they stay proportional to the knob at any size.
+     The indicator/border widths are clamped with a floor so they stay
+     visible rather than shrinking toward 0 at small sizes. */
   --pot-label-font-size-auto: calc(var(--pot-size, 128px) * 0.1025);
   --pot-value-font-size-auto: calc(var(--pot-size, 128px) * 0.1025);
   --pot-gap-auto: calc(var(--pot-size, 128px) * 0.0625);
+  --pot-indicator-width-auto: clamp(2px, calc(var(--pot-size, 128px) * 0.03125), 8px);
+  --pot-knob-border-width-auto: clamp(1px, calc(var(--pot-size, 128px) * 0.015625), 4px);
 
   display: inline-grid;
   justify-items: center;
@@ -90,7 +94,7 @@
   width: 58%;
   height: 58%;
   overflow: hidden;
-  border: 2px solid var(--pot-knob-edge, var(--pot-knob-edge-auto));
+  border: var(--pot-knob-border-width, var(--pot-knob-border-width-auto)) solid var(--pot-knob-edge, var(--pot-knob-edge-auto));
   border-radius: 50%;
   background: radial-gradient(
     circle at calc(50% + var(--pot-light-x) * 22%) calc(50% + var(--pot-light-y) * 22%),
@@ -153,13 +157,13 @@
 .vintage-potentiometer__knob-outline path {
   fill: none;
   stroke: var(--pot-knob-edge, var(--pot-knob-edge-auto));
-  stroke-width: 2px;
+  stroke-width: var(--pot-knob-border-width, var(--pot-knob-border-width-auto));
   vector-effect: non-scaling-stroke;
 }
 
 /* Only the transparent indicator layer rotates. Lighting remains stationary. */
 .vintage-potentiometer__rotor { position: absolute; inset: 0; border-radius: 50%; transform-origin: center; }
-.vintage-potentiometer__indicator { position: absolute; top: 8%; left: 50%; width: 4px; height: 28%; border-radius: 2px; background: var(--pot-indicator); box-shadow: 0 0 1px #000; transform: translateX(-50%); }
+.vintage-potentiometer__indicator { position: absolute; top: 8%; left: 50%; width: var(--pot-indicator-width, var(--pot-indicator-width-auto)); height: 28%; border-radius: 2px; background: var(--pot-indicator); box-shadow: 0 0 1px #000; transform: translateX(-50%); }
 .vintage-potentiometer__value { min-height: 1.25em; color: inherit; font-family: var(--pot-value-font-family); font-size: var(--pot-value-font-size, var(--pot-value-font-size-auto)); font-variant-numeric: tabular-nums; }
 .vintage-potentiometer--disabled { opacity: 0.45; }
 .vintage-potentiometer--disabled .vintage-potentiometer__control { cursor: not-allowed; }

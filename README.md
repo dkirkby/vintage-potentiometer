@@ -159,6 +159,8 @@ Set `--pot-panel-highlight`, `--pot-panel-edge`, `--pot-knob-highlight`, or `--p
 }
 ```
 
+`--pot-indicator-width` and `--pot-knob-border-width` are optional too, following the same pattern, but clamped with a floor (and a ceiling) rather than scaling all the way down to nothing at small sizes or up indefinitely at large ones.
+
 For colors computed at runtime (e.g. a live theme picker), set the same custom properties via `style` instead — the values must land on the component's own root element, so an ancestor element's `style` will not work:
 
 ```tsx
