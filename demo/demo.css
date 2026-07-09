@@ -7,7 +7,6 @@ h1 { margin: 0 0 0.4rem; font-family: Georgia, "Times New Roman", serif; letter-
 .demo-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; align-items: start; }
 .demo-red-knob { --pot-knob-face: #542b25; }
 .demo-readout { display: block; margin-top: 2rem; padding: 1rem 1.1rem; border: 1px solid #a89c80; border-radius: 10px; background: #d7ccb1; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.6; }
-.demo-instructions { margin: 1.25rem 0 0; color: #5f584b; font-size: 0.92rem; }
 kbd { padding: 0.1rem 0.35rem; border: 1px solid #a89c80; border-radius: 4px; background: rgb(255 255 255 / 35%); box-shadow: 0 1px 0 rgb(0 0 0 / 15%); font: inherit; }
 
 .demo-divider { margin: 2.5rem 0; border: none; border-top: 1px solid #a89c80; }
