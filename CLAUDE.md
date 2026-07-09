@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A single-component React library published to npm as `@dkirkby/vintage-potentiometer`. It exposes one component, `Potentiometer`: a controlled input with range-slider semantics rendered as a 1950s rotary knob. There is no application here beyond the demo used for local development.
+A single-component React library published to npm as `@dkirkby/vintage-potentiometer`. It exposes one component, `Potentiometer`: a controlled input with range-slider semantics rendered as a 1950s rotary knob. There is no application here beyond the demo used for local development: `demo/Playground.tsx` is a live control panel exposing every prop for interactive tuning, while `demo/Demo.tsx` renders it alongside a few curated real-world examples (e.g. the log-scale Frequency knob).
 
 ## Commands
 
@@ -45,6 +45,8 @@ npx vitest run -t "resets on double-click"
 
 Styling is entirely CSS custom properties (`--pot-*`) scoped under `.vintage-potentiometer`. Consumers theme by passing `className` and overriding the variables in their own rule (see `demo/demo.css` `.demo-red-knob` and the README). When adding visual features, expose them as `--pot-*` variables rather than hardcoded colors.
 
+Several `--pot-*` properties (font sizes, `--pot-gap`, indicator/border widths, and the derived highlight/edge colors) follow an override-or-auto-computed-default pattern: the property is read as `var(--pot-x, var(--pot-x-auto))`, where `--pot-x-auto` is a `calc()`/`color-mix()` expression — for the size-related ones, derived from `--pot-size` (set from the `size` prop) so they scale with it; for the colors, derived from `--pot-panel`/`--pot-knob-face`. Consumers can still set `--pot-x` directly for an exact fixed value; leaving it unset falls through to the computed default. Follow this pattern for new size- or color-dependent visual properties rather than hardcoding a fixed value.
+
 ## Accessibility
 
-The control has `role="slider"` with `aria-valuemin/max/now` and `aria-valuetext` (the `formatValue` output). Keyboard handling (arrows, shift-arrow for fine, PageUp/Down, Home/End) and `aria-disabled` live in `handleKeyDown`. Tests in `Potentiometer.test.tsx` assert these semantics via `getByRole("slider", ...)` — extend them there when changing interaction behavior.
+The control has `role="slider"` with `aria-valuemin/max/now` and `aria-valuetext` (the `formatValue` output). Keyboard handling (arrows, shift-arrow for fine, PageUp/Down, Home/End) and `aria-disabled` live in `handleKeyDown`. The accessible name comes from `aria-labelledby` pointing at the visible label by default, but switches to a direct `aria-label={label}` when `showLabel` is false, so the control stays accessible with no visible label element to point to. Tests in `Potentiometer.test.tsx` assert these semantics via `getByRole("slider", ...)` — extend them there when changing interaction behavior.
