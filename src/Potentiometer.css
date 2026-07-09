@@ -92,17 +92,12 @@
   overflow: hidden;
   border: 2px solid var(--pot-knob-edge, var(--pot-knob-edge-auto));
   border-radius: 50%;
-  background:
-    repeating-radial-gradient(
-      circle at calc(50% + var(--pot-light-x) * 22%) calc(50% + var(--pot-light-y) * 22%),
-      rgb(255 255 255 / 2.5%) 0 2px, rgb(0 0 0 / 2%) 2px 4px
-    ),
-    radial-gradient(
-      circle at calc(50% + var(--pot-light-x) * 22%) calc(50% + var(--pot-light-y) * 22%),
-      var(--pot-knob-highlight, var(--pot-knob-highlight-auto)) 0%,
-      var(--pot-knob-face) 45%,
-      var(--pot-knob-edge, var(--pot-knob-edge-auto)) 100%
-    );
+  background: radial-gradient(
+    circle at calc(50% + var(--pot-light-x) * 22%) calc(50% + var(--pot-light-y) * 22%),
+    var(--pot-knob-highlight, var(--pot-knob-highlight-auto)) 0%,
+    var(--pot-knob-face) 45%,
+    var(--pot-knob-edge, var(--pot-knob-edge-auto)) 100%
+  );
   box-shadow:
     inset calc(var(--pot-light-x) * -3px) calc(var(--pot-light-y) * -3px) 3px
       color-mix(in srgb, var(--pot-knob-highlight, var(--pot-knob-highlight-auto)) 45%, transparent),

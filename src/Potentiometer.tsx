@@ -163,6 +163,11 @@ export function Potentiometer({
     () => buildScallopPath(scallopCount, scallopFlat, scallopRadius, 0.4875),
     [scallopCount, scallopFlat, scallopRadius]
   );
+  // buildScallopPath places a notch's center at angle 0, so rotating the
+  // scallop shape by the same `angle` as the indicator would align it with a
+  // notch. Offsetting by half a wedge instead centers the indicator on the
+  // flat ridge between two notches.
+  const scallopRotation = angle - 180 / scallopCount;
 
   function setPosition(nextPosition: number): void {
     const boundedPosition = clamp(nextPosition, 0, 1);
@@ -286,14 +291,14 @@ export function Potentiometer({
         </div>
         {scalloped && (
           <svg className="vintage-potentiometer__knob-shadow" viewBox="0 0 1 1" aria-hidden="true">
-            <path d={scallopClipPath} transform={`rotate(${angle} 0.5 0.5)`} />
+            <path d={scallopClipPath} transform={`rotate(${scallopRotation} 0.5 0.5)`} />
           </svg>
         )}
         {scalloped && (
           <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
             <defs>
               <clipPath id={`${id}-scallop`} clipPathUnits="objectBoundingBox">
-                <path d={scallopClipPath} transform={`rotate(${angle} 0.5 0.5)`} />
+                <path d={scallopClipPath} transform={`rotate(${scallopRotation} 0.5 0.5)`} />
               </clipPath>
             </defs>
           </svg>
@@ -309,7 +314,7 @@ export function Potentiometer({
         </div>
         {scalloped && (
           <svg className="vintage-potentiometer__knob-outline" viewBox="0 0 1 1" aria-hidden="true">
-            <path d={scallopOutlinePath} transform={`rotate(${angle} 0.5 0.5)`} />
+            <path d={scallopOutlinePath} transform={`rotate(${scallopRotation} 0.5 0.5)`} />
           </svg>
         )}
       </div>
